@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <title>Login</title>
+
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- create a form with name, email, password, confirm password -->
+    <form class="login-form">
+      
+      <input
+        type="email"
+        name="email"
+        placeholder="Enter your email"
+        id="email"
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="Enter your password"
+        id="password"
+      />
+      <button type="submit">Submit</button>
+    </form>
+
+    <script>
+      let form = document.querySelector(".login-form");
+     
+      let email_box = document.querySelector("#email");
+      let password_box = document.querySelector("#password");
+      
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+       
+        let email = email_box.value;
+        let password = password_box.value;
+       
+
+        if ( !email || !password) {
+          alert("All fields are required");
+          return;
+        }
+
+      
+
+        let loginData = {
+         
+          email,
+          password,
+        };
+        fetch("https://instagram-express-app.vercel.app/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(loginData),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+           
+            email.value = "";
+            password.value = "";
+           window.location.href = "./youtubehome.html";
+          })
+          // show success message by alert
+          .catch((error) => console.log(error));
+
+      
+      });
+    </script>
+  </body>
+</html>
+
+<!-- email is correct  -->
+
+<!-- all filed should not empty -->
+

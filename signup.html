@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- create a form with name, email, password, confirm password -->
+    <form class="signup-form">
+      <input type="text" name="name" placeholder="Enter your name" id="name" />
+      <input type="email" name="email" placeholder="Enter your email" id="email" />
+      <input type="password" name="password" placeholder="Enter your password" id="password" />
+      <input type="password" name="confirmPassword" placeholder="Confirm your password" id="confirmPassword" />
+      <button type="submit">Submit</button>
+    </form>
+
+    <script>
+      let form = document.querySelector(".signup-form");
+      let name_box = document.querySelector("#name");
+      let email_box = document.querySelector("#email");
+      let password_box = document.querySelector("#password");
+      let confirmPassword_box = document.querySelector("#confirmPassword");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        let name = name_box.value;
+        let email = email_box.value;
+        let password = password_box.value;
+        let confirmPassword = confirmPassword_box.value;
+
+        if (!name || !email || !password || !confirmPassword) {
+          alert("All fields are required");
+          return;
+        }
+
+        if (password != confirmPassword) {
+          alert("Password and Confirm Password should be same");
+          return;
+        }
+
+        let signupData = {
+          name,
+          email,
+          password,
+        };
+        fetch("https://instagram-express-app.vercel.app/api/auth/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(signupData),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+            if (data.error) {
+              alert(data.error);
+            } else {
+              alert("Signup successful!");
+              name_box.value = "";
+              email_box.value = "";
+              password_box.value = "";
+              confirmPassword_box.value = "";
+              // store token or user ID in local storage
+              if (data.token) {
+              localStorage.setItem("token", data.token);
+              }
+              // user created successfully, redirect to login page
+              window.location.href = "./login.html";
+            }
+            })
+            .catch((error) => {
+            console.error("Error:", error);
+            alert("An error occurred during signup. Please try again.");
+            });
+          });
+    </script>
+  </body>
+</html>

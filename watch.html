@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch</title>
+  <link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body>
+  <div class="watch-page">
+    <div class="left"></div>
+    <div class="right"></div>
+  </div>
+
+  <script>
+    let currentVideoJSON = localStorage.getItem("currentVideo");
+    let leftSection = document.querySelector(".left");
+    let currentVideo;
+    if (currentVideoJSON) {
+      currentVideo = JSON.parse(currentVideoJSON);
+
+      let iframe = document.createElement("iframe");
+      iframe.src = `https://www.youtube.com/embed/${currentVideo.id.videoId}`;
+      iframe.style.width = "780px";
+      iframe.style.height = "500px";
+      iframe.allowFullscreen = "true";
+      iframe.title = currentVideo.snippet.title;
+      leftSection.append(iframe);
+    }
+      let rightSection = document.querySelector(".right");
+      // display related videos in right section
+      let relatedVideosJSON = localStorage.getItem("relatedVideos");
+      if (relatedVideosJSON) {
+        let relatedVideos = JSON.parse(relatedVideosJSON);
+        relatedVideos.forEach((video) => {
+          let div = document.createElement("div");
+          div.style.display = "flex";
+          div.style.marginBottom = "10px";
+          div.style.cursor = "pointer";
+          div.onclick = () => {
+            localStorage.setItem("currentVideo", JSON.stringify(video));
+            window.location.href = "watch.html";
+          };
+
+          let img = document.createElement("img");
+          img.src = video.snippet.thumbnails.default.url;
+          img.style.width = "120px";
+          img.style.height = "90px";
+
+          let p = document.createElement("p");
+          p.textContent = video.snippet.title;
+          p.style.marginLeft = "10px";
+
+          div.append(img, p);
+          rightSection.append(div);
+        });
+      }
+  </script>
+</body>
+</html>
